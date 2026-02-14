@@ -6,22 +6,22 @@ export default class TutorialsList extends Component {
   constructor(props) {
     super(props);
     this.onChangeSearchTitle = this.onChangeSearchTitle.bind(this);
-    this.retrieveTutorials = this.retrieveTutorials.bind(this);
+    this.retrieveUAVs = this.retrieveUAVs.bind(this);
     this.refreshList = this.refreshList.bind(this);
-    this.setActiveTutorial = this.setActiveTutorial.bind(this);
-    this.removeAllTutorials = this.removeAllTutorials.bind(this);
+    this.setActiveUAV = this.setActiveUAV.bind(this);
+    this.removeAllUAV = this.removeAllUAV.bind(this);
     this.searchTitle = this.searchTitle.bind(this);
 
     this.state = {
-      tutorials: [],
-      currentTutorial: null,
+      UAVs: [],
+      currentUAV: null,
       currentIndex: -1,
       searchTitle: ""
     };
   }
 
   componentDidMount() {
-    this.retrieveTutorials();
+    this.retrieveUAVs();
   }
 
   onChangeSearchTitle(e) {
@@ -32,11 +32,11 @@ export default class TutorialsList extends Component {
     });
   }
 
-  retrieveTutorials() {
+  retrieveUAVs() {
     UAVDataService.getAll()
       .then(response => {
         this.setState({
-          tutorials: response.data
+          UAVs: response.data
         });
         console.log(response.data);
       })
@@ -46,16 +46,16 @@ export default class TutorialsList extends Component {
   }
 
   refreshList() {
-    this.retrieveTutorials();
+    this.retrieveUAVs();
     this.setState({
-      currentTutorial: null,
+      currentUAV: null,
       currentIndex: -1
     });
   }
 
-  setActiveTutorial(tutorial, index) {
+  setActiveUAV(UAV, index) {
     this.setState({
-      currentTutorial: tutorial,
+      currentUAV: UAV,
       currentIndex: index
     });
   }
@@ -90,7 +90,7 @@ export default class TutorialsList extends Component {
   }
 
   render() {
-    const { searchTitle, tutorials, currentTutorial, currentIndex } = this.state;
+    const { searchTitle, UAVs, currentUAV, currentIndex } = this.state;
 
     return (
       <div className="list row">
@@ -115,20 +115,20 @@ export default class TutorialsList extends Component {
           </div>
         </div>
         <div className="col-md-6">
-          <h4>Tutorials List</h4>
+          <h4>Список засобів</h4>
 
           <ul className="list-group">
-            {tutorials &&
-              tutorials.map((tutorial, index) => (
+            {UAVs &&
+              UAVs.map((UAV, index) => (
                 <li
                   className={
                     "list-group-item " +
                     (index === currentIndex ? "active" : "")
                   }
-                  onClick={() => this.setActiveTutorial(tutorial, index)}
+                  onClick={() => this.setActiveUAV(UAV, index)}
                   key={index}
                 >
-                  {tutorial.title}
+                  {UAV.title}
                 </li>
               ))}
           </ul>
@@ -141,39 +141,39 @@ export default class TutorialsList extends Component {
           </button>
         </div>
         <div className="col-md-6">
-          {currentTutorial ? (
+          {currentUAV ? (
             <div>
-              <h4>Tutorial</h4>
+              <h4>Засіб</h4>
               <div>
                 <label>
-                  <strong>Title:</strong>
+                  <strong>Назва:</strong>
                 </label>{" "}
-                {currentTutorial.title}
+                {currentUAV.title}
               </div>
               <div>
                 <label>
-                  <strong>Description:</strong>
+                  <strong>Опис:</strong>
                 </label>{" "}
-                {currentTutorial.description}
+                {currentUAV.description}
               </div>
               <div>
                 <label>
-                  <strong>Status:</strong>
+                  <strong>Статус:</strong>
                 </label>{" "}
-                {currentTutorial.published ? "Published" : "Pending"}
+                {currentUAV.published ? "Published" : "Pending"}
               </div>
 
               <Link
-                to={"/all/" + currentTutorial.id}
+                to={"/all/" + currentUAV.id}
                 className="badge badge-warning"
               >
-                Edit
+                Змінити
               </Link>
             </div>
           ) : (
             <div>
               <br />
-              <p>Please click on a Tutorial...</p>
+              <p>Клікніть на засіб...</p>
             </div>
           )}
         </div>

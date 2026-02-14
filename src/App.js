@@ -3,9 +3,9 @@ import { Routes, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
-import AddTutorial from "./components/add-tutorial.component";
-import Tutorial from "./components/tutorial.component";
-import TutorialsList from "./components/tutorials-list.component";
+import AddUAV from "./components/addUAV.component";
+import UAV from "./components/uav.component";
+import UAVsList from "./components/tutorials-list.component";
 
 class App extends Component {
   render() {
@@ -31,10 +31,10 @@ class App extends Component {
 
         <div className="container mt-3">
           <Routes>
-            <Route path="/" element={<TutorialsList/>} />
-            <Route path="/all" element={<TutorialsList/>} />
-            <Route path="/add" element={<AddTutorial/>} />
-            <Route path="/all/:id" element={<Tutorial/>} />
+            <Route path="/" element={<UAVsList/>} />
+            <Route path="/all" element={<UAVsList/>} />
+            <Route path="/add" element={<AddUAV/>} />
+            <Route path="/all/:id" element={<UAV/>} />
           </Routes>
         </div>
       </div>

@@ -59,7 +59,7 @@ function UAV(props) {
     UAVDataService.update(currentUAV.id, currentUAV)
       .then(response => {
         console.log(response.data);
-        setMessage("The UAV was updated successfully!");
+        setMessage("Засіб успішно змінено!");
       })
       .catch(e => {
         console.log(e);

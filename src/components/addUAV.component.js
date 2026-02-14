@@ -4,7 +4,7 @@ import { withRouter } from '../common/with-router';
 import UAVDataService from "../services/uav.service";
 import LocationDataService from "../services/location.service";
 
-function AddTutorial(props) {
+function AddUAV(props) {
   const [state, setState] = useState({
       id: null,
       title: "",
@@ -24,7 +24,7 @@ function AddTutorial(props) {
     // console.log(this.state.locations);  !!!!!!
   }
 
-  const saveTutorial = () => {
+  const saveUAV = () => {
     var data = {
       title: state.title,
       description: state.description
@@ -45,7 +45,7 @@ function AddTutorial(props) {
       });
   }
 
-  const newTutorial = () => {
+  const newUAV = () => {
     setState(prev => ({
       id: null,
       title: "",
@@ -60,7 +60,7 @@ function AddTutorial(props) {
       {state.submitted ? (
         <div>
           <h4>You submitted successfully!</h4>
-          <button className="btn btn-success" onClick={newTutorial}>
+          <button className="btn btn-success" onClick={newUAV}>
             Add
           </button>
         </div>
@@ -92,7 +92,7 @@ function AddTutorial(props) {
             />
           </div>
           
-          <button onClick={saveTutorial} className="btn btn-success">
+          <button onClick={saveUAV} className="btn btn-success">
             Submit
           </button>
         </div>
@@ -101,4 +101,4 @@ function AddTutorial(props) {
   );
 }
 
-export default withRouter(AddTutorial);
+export default withRouter(AddUAV);
