@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { withRouter } from '../common/with-router';
 
-import TutorialDataService from "../services/tutorial.service";
+import UAVDataService from "../services/uav.service";
 import LocationDataService from "../services/location.service";
 
 function AddTutorial(props) {
@@ -30,7 +30,7 @@ function AddTutorial(props) {
       description: state.description
     };
 
-    TutorialDataService.create(data)
+    UAVDataService.create(data)
       .then(response => {
         const id = response.data.id;
         const title = response.data.title;

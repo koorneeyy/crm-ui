@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import TutorialDataService from "../services/tutorial.service";
+import UAVDataService from "../services/uav.service";
 import { Link } from "react-router-dom";
 
 export default class TutorialsList extends Component {
@@ -33,7 +33,7 @@ export default class TutorialsList extends Component {
   }
 
   retrieveTutorials() {
-    TutorialDataService.getAll()
+    UAVDataService.getAll()
       .then(response => {
         this.setState({
           tutorials: response.data
@@ -60,8 +60,8 @@ export default class TutorialsList extends Component {
     });
   }
 
-  removeAllTutorials() {
-    TutorialDataService.deleteAll()
+  removeAllUAV() {
+    UAVDataService.deleteAll()
       .then(response => {
         console.log(response.data);
         this.refreshList();
@@ -77,7 +77,7 @@ export default class TutorialsList extends Component {
       currentIndex: -1
     });
 
-    TutorialDataService.findByTitle(this.state.searchTitle)
+    UAVDataService.findByTitle(this.state.searchTitle)
       .then(response => {
         this.setState({
           tutorials: response.data
