@@ -1,43 +1,29 @@
-import React, { Component } from "react";
+import { useState, useEffect, withRouter } from "react";
 import UAVDataService from "../services/uav.service";
 import { Link } from "react-router-dom";
 
-export default class TutorialsList extends Component {
-  constructor(props) {
-    super(props);
-    this.onChangeSearchTitle = this.onChangeSearchTitle.bind(this);
-    this.retrieveUAVs = this.retrieveUAVs.bind(this);
-    this.refreshList = this.refreshList.bind(this);
-    this.setActiveUAV = this.setActiveUAV.bind(this);
-    this.removeAllUAV = this.removeAllUAV.bind(this);
-    this.searchTitle = this.searchTitle.bind(this);
+function UAVsList(props) {
+  useEffect(() => {
+    retrieveUAVs();
+  }, []);
 
-    this.state = {
+
+  const [state, setState] = useState({
       UAVs: [],
       currentUAV: null,
       currentIndex: -1,
       searchTitle: ""
-    };
+  })
+
+  const onChangeSearchTitle = (e) => {
+    const searchTitle = e.target.value
+    setState(prev => ({ ...prev, searchTitle }));
   }
 
-  componentDidMount() {
-    this.retrieveUAVs();
-  }
-
-  onChangeSearchTitle(e) {
-    const searchTitle = e.target.value;
-
-    this.setState({
-      searchTitle: searchTitle
-    });
-  }
-
-  retrieveUAVs() {
+  const retrieveUAVs = () => {
     UAVDataService.getAll()
       .then(response => {
-        this.setState({
-          UAVs: response.data
-        });
+        setState(prev => ({ ...prev, UAVs: response.data}));  
         console.log(response.data);
       })
       .catch(e => {
@@ -45,53 +31,37 @@ export default class TutorialsList extends Component {
       });
   }
 
-  refreshList() {
-    this.retrieveUAVs();
-    this.setState({
-      currentUAV: null,
-      currentIndex: -1
-    });
+  const refreshList = () => {
+    retrieveUAVs();
+    setState(prev => ({ ...prev, currentUAV: null, currentIndex: -1}));
   }
 
-  setActiveUAV(UAV, index) {
-    this.setState({
-      currentUAV: UAV,
-      currentIndex: index
-    });
+  const setActiveUAV = (UAV, index) => {
+    setState(prev => ({ ...prev, currentUAV: UAV, currentIndex: index}));
   }
 
-  removeAllUAV() {
+  const removeAllUAV = () => {
     UAVDataService.deleteAll()
       .then(response => {
         console.log(response.data);
-        this.refreshList();
+        refreshList();
       })
       .catch(e => {
         console.log(e);
       });
   }
 
-  searchTitle() {
-    this.setState({
-      currentTutorial: null,
-      currentIndex: -1
-    });
-
-    UAVDataService.findByTitle(this.state.searchTitle)
+  const searchTitle = () => {
+    setState(prev => ({ ...prev, currentUAV: null, currentIndex: -1}));
+    UAVDataService.findByTitle(state.searchTitle)
       .then(response => {
-        this.setState({
-          tutorials: response.data
-        });
-        console.log(response.data);
+      setState(prev => ({ ...prev, UAVs: response.data}));  
+      console.log(response.data);
       })
       .catch(e => {
         console.log(e);
       });
   }
-
-  render() {
-    const { searchTitle, UAVs, currentUAV, currentIndex } = this.state;
-
     return (
       <div className="list row">
         <div className="col-md-8">
@@ -100,14 +70,14 @@ export default class TutorialsList extends Component {
               type="text"
               className="form-control"
               placeholder="Search by title"
-              value={searchTitle}
-              onChange={this.onChangeSearchTitle}
+              value={state.searchTitle}
+              onChange={onChangeSearchTitle}
             />
             <div className="input-group-append">
               <button
                 className="btn btn-outline-secondary"
                 type="button"
-                onClick={this.searchTitle}
+                onClick={searchTitle}
               >
                 Search
               </button>
@@ -118,14 +88,14 @@ export default class TutorialsList extends Component {
           <h4>Список засобів</h4>
 
           <ul className="list-group">
-            {UAVs &&
-              UAVs.map((UAV, index) => (
+            {state && state.UAVs &&
+              state.UAVs.map((UAV, index) => (
                 <li
                   className={
                     "list-group-item " +
-                    (index === currentIndex ? "active" : "")
+                    (index === state.currentIndex ? "active" : "")
                   }
-                  onClick={() => this.setActiveUAV(UAV, index)}
+                  onClick={() => setActiveUAV(UAV, index)}
                   key={index}
                 >
                   {UAV.title}
@@ -135,36 +105,36 @@ export default class TutorialsList extends Component {
 
           <button
             className="m-3 btn btn-sm btn-danger"
-            onClick={this.removeAllTutorials}
+            onClick={removeAllUAV}
           >
             Remove All
           </button>
         </div>
         <div className="col-md-6">
-          {currentUAV ? (
+          {state.currentUAV ? (
             <div>
               <h4>Засіб</h4>
               <div>
                 <label>
                   <strong>Назва:</strong>
                 </label>{" "}
-                {currentUAV.title}
+                {state.currentUAV.title}
               </div>
               <div>
                 <label>
                   <strong>Опис:</strong>
                 </label>{" "}
-                {currentUAV.description}
+                {state.currentUAV.description}
               </div>
               <div>
                 <label>
                   <strong>Статус:</strong>
                 </label>{" "}
-                {currentUAV.published ? "Published" : "Pending"}
+                {state.currentUAV.published ? "Published" : "Pending"}
               </div>
 
               <Link
-                to={"/all/" + currentUAV.id}
+                to={"/all/" + state.currentUAV.id}
                 className="badge badge-warning"
               >
                 Змінити
@@ -179,5 +149,9 @@ export default class TutorialsList extends Component {
         </div>
       </div>
     );
-  }
+  //}
 }
+
+// export default withRouter(UAVsList);
+ //export default withRouter(UAVsList);
+export default UAVsList;

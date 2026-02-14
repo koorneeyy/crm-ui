@@ -5,7 +5,7 @@ import "./App.css";
 
 import AddUAV from "./components/addUAV.component";
 import UAV from "./components/uav.component";
-import UAVsList from "./components/tutorials-list.component";
+import UAVsList from "./components/allUAVs";
 
 class App extends Component {
   render() {
