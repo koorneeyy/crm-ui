@@ -55,7 +55,7 @@ function UAVsList(props) {
     setState(prev => ({ ...prev, currentUAV: null, currentIndex: -1}));
     UAVDataService.findByTitle(state.searchTitle)
       .then(response => {
-      setState(prev => ({ ...prev, UAVs: response.data}));  
+      setState(prev => ({ ...prev, UAVs: response.data}));
       console.log(response.data);
       })
       .catch(e => {

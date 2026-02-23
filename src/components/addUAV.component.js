@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { withRouter } from '../common/with-router';
 
 import UAVDataService from "../services/uav.service";
@@ -9,9 +9,24 @@ function AddUAV(props) {
       id: null,
       title: "",
       description: "",
-      published: false
+      published: false,
+      locations: [],
+      selectedLocId: "",
     });
-
+const [selectedLocation, setSelectedLocation] = useState('');
+const handleChange = (event) => {
+    setSelectedLocation(event.target.value);
+  };
+  useEffect(() => {
+    LocationDataService.getAll()
+      .then(response => {
+        console.log (response.data);
+        setState(prev => ({ ...prev, locations: response.data}));  
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  }, []);  
   
   const onChangeTitle = (e) => {
     const title = e.target.value;
@@ -25,9 +40,11 @@ function AddUAV(props) {
   }
 
   const saveUAV = () => {
+    console.log("location: ", selectedLocation)
     var data = {
       title: state.title,
-      description: state.description
+      description: state.description,
+      location: {id: selectedLocation},
     };
 
     UAVDataService.create(data)
@@ -67,9 +84,9 @@ function AddUAV(props) {
       ) : (
         <div>
           <div className="form-group">
-            <label htmlFor="title">Title</label>
+            <label htmlFor="title">Номер</label>
             <input
-              type="text"
+              type="number"
               className="form-control"
               id="title"
               required
@@ -92,6 +109,18 @@ function AddUAV(props) {
             />
           </div>
           
+          <div>
+            <select value={selectedLocation} onChange={handleChange}>
+              {/* Add a default disabled option if needed */}
+              {/* <option value="" disabled>Виберіть місцезнаходження</option> */}
+              {state.locations.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div></div>
           <button onClick={saveUAV} className="btn btn-success">
             Submit
           </button>
