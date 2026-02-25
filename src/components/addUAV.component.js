@@ -97,7 +97,7 @@ const handleChange = (event) => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="description">Description</label>
+            <label htmlFor="description">Коментар</label>
             <input
               type="text"
               className="form-control"
@@ -110,7 +110,11 @@ const handleChange = (event) => {
           </div>
           
           <div>
-            <select value={selectedLocation} onChange={handleChange}>
+            <select 
+              value={selectedLocation}
+              onChange={handleChange}
+              className='form-control'
+            >
               {/* Add a default disabled option if needed */}
               {/* <option value="" disabled>Виберіть місцезнаходження</option> */}
               {state.locations.map((option) => (
@@ -122,7 +126,7 @@ const handleChange = (event) => {
           </div>
           <div></div>
           <button onClick={saveUAV} className="btn btn-success">
-            Submit
+            Додати
           </button>
         </div>
       )}
