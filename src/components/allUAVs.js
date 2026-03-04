@@ -1,19 +1,40 @@
-import { useState, useEffect, withRouter } from "react";
+import { useState, useEffect } from "react";
 import UAVDataService from "../services/uav.service";
-import { Link } from "react-router-dom";
+import { AllCommunityModule } from 'ag-grid-community';
+import { AgGridProvider } from 'ag-grid-react';
+import { AgGridReact } from 'ag-grid-react';
+
 
 function UAVsList(props) {
   useEffect(() => {
     retrieveUAVs();
   }, []);
 
-
+  const modules = [AllCommunityModule];
   const [state, setState] = useState({
       UAVs: [],
       currentUAV: null,
       currentIndex: -1,
       searchTitle: ""
   })
+
+
+const colDefs = [
+    { field: "id" , headerName: "ID", width:70},
+    { field: "title", headerName: "Номер", width:100},
+    { field: "description", headerName: "Коментар", width:250},
+    { field: "published", headerName: "Списаний", width:80},
+    { field: "location.name", headerName  : "Розташування", width:150}
+  ]
+const gridOptions = {
+    suppressCellSelection: true, 
+    rowSelection: {
+     mode: 'singleRow', // singleRow or 'multiRow'
+      // suppressRowClickSelection: true,
+      // 3. Enable selection when clicking the row itself
+      // enableClickSelection: true,
+    }
+  }
 
   const onChangeSearchTitle = (e) => {
     const searchTitle = e.target.value
@@ -62,6 +83,7 @@ function UAVsList(props) {
         console.log(e);
       });
   }
+
     return (
       <div className="list row">
         <div className="col-md-8">
@@ -87,22 +109,6 @@ function UAVsList(props) {
         <div className="col-md-6">
           <h4>Список засобів</h4>
 
-          <ul className="list-group">
-            {state && state.UAVs &&
-              state.UAVs.map((UAV, index) => (
-                <li
-                  className={
-                    "list-group-item " +
-                    (index === state.currentIndex ? "active" : "")
-                  }
-                  onClick={() => setActiveUAV(UAV, index)}
-                  key={index}
-                >
-                  {UAV.title}
-                </li>
-              ))}
-          </ul>
-
           <button
             className="m-3 btn btn-sm btn-danger"
             onClick={removeAllUAV}
@@ -110,48 +116,22 @@ function UAVsList(props) {
             Remove All
           </button>
         </div>
-        <div className="col-md-6">
-          {state.currentUAV ? (
-            <div>
-              <h4>Засіб</h4>
-              <div>
-                <label>
-                  <strong>Назва:</strong>
-                </label>{" "}
-                {state.currentUAV.title}
-              </div>
-              <div>
-                <label>
-                  <strong>Опис:</strong>
-                </label>{" "}
-                {state.currentUAV.description}
-              </div>
-              <div>
-                <label>
-                  <strong>Статус:</strong>
-                </label>{" "}
-                {state.currentUAV.published ? "Published" : "Pending"}
-              </div>
+      <div>
 
-              <Link
-                to={"/all/" + state.currentUAV.id}
-                className="badge badge-warning"
-              >
-                Змінити
-              </Link>
-            </div>
-          ) : (
-            <div>
-              <br />
-              <p>Клікніть на засіб...</p>
-            </div>
-          )}
+        <AgGridProvider modules={modules}>
+        <div style={{ height: 400, width: 800 }}>
+            <AgGridReact
+                rowData={state.UAVs}
+                columnDefs={colDefs}
+                gridOptions={gridOptions}
+            />
         </div>
+    </AgGridProvider>
       </div>
+      
+      </div>
+      
     );
   //}
 }
-
-// export default withRouter(UAVsList);
- //export default withRouter(UAVsList);
 export default UAVsList;

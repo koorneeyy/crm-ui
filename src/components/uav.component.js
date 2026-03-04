@@ -94,7 +94,7 @@ function UAV(props) {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="description">Description</label>
+              <label htmlFor="description">Коментар</label>
               <input
                 type="text"
                 className="form-control"
@@ -106,7 +106,7 @@ function UAV(props) {
 
             <div className="form-group">
               <label>
-                <strong>Status:</strong>
+                <strong>Статус:</strong>
               </label>
               {currentUAV.published ? "Published" : "Pending"}
             </div>
@@ -147,7 +147,7 @@ function UAV(props) {
       ) : (
         <div>
           <br />
-          <p>Please click on a Tutorial...</p>
+          <p>Виберіть засіб...</p>
         </div>
       )}
     </div>

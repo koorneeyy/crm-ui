@@ -110,13 +110,14 @@ const handleChange = (event) => {
           </div>
           
           <div>
-            <select 
+            <label htmlFor="description">Локація</label>
+            <select
               value={selectedLocation}
               onChange={handleChange}
               className='form-control'
             >
               {/* Add a default disabled option if needed */}
-              {/* <option value="" disabled>Виберіть місцезнаходження</option> */}
+              <option value="" disabled>Виберіть місцезнаходження</option>
               {state.locations.map((option) => (
                 <option key={option.id} value={option.id}>
                   {option.name}
@@ -124,6 +125,24 @@ const handleChange = (event) => {
               ))}
             </select>
           </div>
+
+          <div>
+            <label htmlFor="description">Модель</label>
+            <select
+              value={selectedLocation}
+              onChange={handleChange}
+              className='form-control'
+            >
+              {/* Add a default disabled option if needed */}
+              <option value="" disabled>Виберіть модель</option>
+              {state.locations.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div></div>
           <button onClick={saveUAV} className="btn btn-success">
             Додати
