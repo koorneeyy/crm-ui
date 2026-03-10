@@ -14,7 +14,7 @@ function UAVsList(props) {
   const [state, setState] = useState({
       UAVs: [],
       currentUAV: null,
-      currentIndex: -1,
+      currentIndex: null,
       searchTitle: ""
   })
 
@@ -44,7 +44,7 @@ const gridOptions = {
   const retrieveUAVs = () => {
     UAVDataService.getAll()
       .then(response => {
-        setState(prev => ({ ...prev, UAVs: response.data}));  
+        setState(prev => ({ ...prev, UAVs: response.status === 204 ? [] : response.data}));
         console.log(response.data);
       })
       .catch(e => {
@@ -54,15 +54,19 @@ const gridOptions = {
 
   const refreshList = () => {
     retrieveUAVs();
-    setState(prev => ({ ...prev, currentUAV: null, currentIndex: -1}));
+    setState(prev => ({ ...prev, currentUAV: null, currentIndex: null}));
   }
 
-  const setActiveUAV = (UAV, index) => {
-    setState(prev => ({ ...prev, currentUAV: UAV, currentIndex: index}));
+  const onSelectionChanged = (event) => {
+    if (event.selectedNodes.length > 0  ) {
+      setState(prev => ({ ...prev, currentIndex: event.selectedNodes[0].data.id}));  
+    } else {
+      setState(prev => ({ ...prev, currentIndex: null}));  
+    }
   }
 
-  const removeAllUAV = () => {
-    UAVDataService.deleteAll()
+  const removeById = () => {
+    UAVDataService.delete(state.currentIndex)
       .then(response => {
         console.log(response.data);
         refreshList();
@@ -73,7 +77,7 @@ const gridOptions = {
   }
 
   const searchTitle = () => {
-    setState(prev => ({ ...prev, currentUAV: null, currentIndex: -1}));
+    setState(prev => ({ ...prev, currentUAV: null, currentIndex: null}));
     UAVDataService.findByTitle(state.searchTitle)
       .then(response => {
       setState(prev => ({ ...prev, UAVs: response.data}));
@@ -107,31 +111,28 @@ const gridOptions = {
           </div>
         </div>
         <div className="col-md-6">
-          <h4>Список засобів</h4>
-
-          <button
-            className="m-3 btn btn-sm btn-danger"
-            onClick={removeAllUAV}
-          >
-            Remove All
-          </button>
+          <h4>Список засобів</h4>          
         </div>
-      <div>
-
-        <AgGridProvider modules={modules}>
-        <div style={{ height: 400, width: 800 }}>
-            <AgGridReact
-                rowData={state.UAVs}
-                columnDefs={colDefs}
-                gridOptions={gridOptions}
-            />
-        </div>
-    </AgGridProvider>
-      </div>
-      
-      </div>
-      
+        <div>
+          <AgGridProvider modules={modules}>
+            <div style={{ height: 400, width: 800 }}>
+              <AgGridReact
+                  rowData={state.UAVs}
+                  columnDefs={colDefs}
+                  gridOptions={gridOptions}
+                  onSelectionChanged={onSelectionChanged}
+              />
+            </div>
+          </AgGridProvider>
+        </div>      
+        {/* <button className="m-3 btn btn-sm btn-danger" onClick={removeAllUAV}>
+          Видалити всі
+        </button> */}
+          <button disabled={!state.currentIndex} className="m-3 btn btn-sm btn-danger" onClick={removeById}>
+          Видалити обраний
+        </button>
+      </div>      
     );
-  //}
+
 }
 export default UAVsList;

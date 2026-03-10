@@ -11,13 +11,31 @@ function AddUAV(props) {
       description: "",
       published: false,
       locations: [],
+      models: [],
+      brands: [],
       selectedLocId: "",
     });
 const [selectedLocation, setSelectedLocation] = useState('');
-const handleChange = (event) => {
-    setSelectedLocation(event.target.value);
-  };
-  useEffect(() => {
+const [selectedBrand, setSelectedBrand] = useState('');
+const [selectedModel, setSelectedModel] = useState('');
+const handleLocationChange = (event) => {
+  setSelectedLocation(event.target.value);
+};
+const handleBrandChange = (event) => { 
+  console.log('!!!',event.target.value);
+  console.log('state.brands ',state.brands);
+  const index = state.brands.findIndex(item => item.id === +event.target.value);
+
+  console.log('!!!',event.target.value, index);
+  console.log(state.brands[index].models);
+  setSelectedBrand(event.target.value);
+  setState(prev => ({ ...prev, models: state.brands[index].models}));  
+};
+const handleModelChange = (event) => {
+  setSelectedModel(event.target.value);
+};
+
+useEffect(() => {
     LocationDataService.getAll()
       .then(response => {
         console.log (response.data);
@@ -26,7 +44,15 @@ const handleChange = (event) => {
       .catch(e => {
         console.log(e);
       });
-  }, []);  
+    UAVDataService.getAllBrands()
+      .then(response => {
+        console.log (response.data);
+        setState(prev => ({ ...prev, brands : response.data}));  
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  }, []);
   
   const onChangeTitle = (e) => {
     const title = e.target.value;
@@ -45,6 +71,7 @@ const handleChange = (event) => {
       title: state.title,
       description: state.description,
       location: {id: selectedLocation},
+      model: {id: selectedModel}
     };
 
     UAVDataService.create(data)
@@ -83,6 +110,41 @@ const handleChange = (event) => {
         </div>
       ) : (
         <div>
+
+          <div>
+            <label htmlFor="description">Виробник</label>
+            <select
+              value={selectedBrand}
+              onChange={handleBrandChange}
+              className='form-control'
+            >
+              {/* Add a default disabled option if needed */}
+              <option value="" disabled>Виберіть виробника</option>
+              {state.brands.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="description">Модель</label>
+            <select
+              value={selectedModel}
+              onChange={handleModelChange}
+              className='form-control'
+            >
+              {/* Add a default disabled option if needed */}
+              <option value="" disabled>Виберіть модель</option>              
+              {(state.models || []).map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div className="form-group">
             <label htmlFor="title">Номер</label>
             <input
@@ -113,7 +175,7 @@ const handleChange = (event) => {
             <label htmlFor="description">Локація</label>
             <select
               value={selectedLocation}
-              onChange={handleChange}
+              onChange={handleLocationChange}
               className='form-control'
             >
               {/* Add a default disabled option if needed */}
@@ -126,27 +188,12 @@ const handleChange = (event) => {
             </select>
           </div>
 
-          <div>
-            <label htmlFor="description">Модель</label>
-            <select
-              value={selectedLocation}
-              onChange={handleChange}
-              className='form-control'
-            >
-              {/* Add a default disabled option if needed */}
-              <option value="" disabled>Виберіть модель</option>
-              {state.locations.map((option) => (
-                <option key={option.id} value={option.id}>
-                  {option.name}
-                </option>
-              ))}
-            </select>
-          </div>
 
-          <div></div>
-          <button onClick={saveUAV} className="btn btn-success">
-            Додати
-          </button>
+          <div>
+            <button onClick={saveUAV} className="btn btn-success form-control">
+              Додати
+            </button>
+          </div>
         </div>
       )}
     </div>

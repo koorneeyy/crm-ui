@@ -5,6 +5,14 @@ class UAVDataService {
     return http.get("/uavs");
   }
 
+  getAllModels() {
+    return http.get("/models");
+  }
+
+  getAllBrands() {
+    return http.get("/brands");
+  }
+
   get(id) {
     return http.get(`/uavs/${id}`);
   }
